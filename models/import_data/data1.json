@@ -1,0 +1,82 @@
+[
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": "STT",
+    "__EMPTY": "Số tài khoản",
+    "__EMPTY_1": "Tên ngân hàng",
+    "__EMPTY_2": "Tên chi nhánh ngân hàng",
+    "__EMPTY_3": "Chủ tài khoản",
+    "__EMPTY_4": "Trạng thái"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 1,
+    "__EMPTY": "0341000614808",
+    "__EMPTY_1": "Ngân hàng TMCP Ngoại thương Việt Nam",
+    "__EMPTY_2": "Hải Dương",
+    "__EMPTY_3": "Nguyễn Tất Tùng",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 2,
+    "__EMPTY": "190359618660",
+    "__EMPTY_1": "Ngân hàng TMCP Kỹ thương Việt Nam",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "Nguyễn Thị Ngọc",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 3,
+    "__EMPTY": "19133880066669",
+    "__EMPTY_1": "Ngân hàng TMCP Kỹ thương Việt Nam",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "Nguyễn Tất Tùng",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 4,
+    "__EMPTY": "22210003668352",
+    "__EMPTY_1": "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "Nguyễn Thị Ngọc",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 5,
+    "__EMPTY": "333686868888",
+    "__EMPTY_1": "Ngân hàng TMCP Á Châu",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "Công ty TNHH Xuất nhập khẩu sữa và dinh dưỡng quốc tế Natrumax",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 6,
+    "__EMPTY": "390589999",
+    "__EMPTY_1": "Ngân hàng Việt Nam Thịnh Vượng",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 7,
+    "__EMPTY": "698999",
+    "__EMPTY_1": "Ngân hàng TMCP Quân đội",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 8,
+    "__EMPTY": "801280623",
+    "__EMPTY_1": "Ngân hàng TMCP Hàng hải Việt Nam",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "",
+    "__EMPTY_4": "Đang sử dụng"
+  },
+  {
+    "DANH SÁCH TÀI KHOẢN NGÂN HÀNG": 9,
+    "__EMPTY": "888008758888",
+    "__EMPTY_1": "Ngân hàng TMCP Đông Nam Á",
+    "__EMPTY_2": "",
+    "__EMPTY_3": "",
+    "__EMPTY_4": "Đang sử dụng"
+  }
+]
