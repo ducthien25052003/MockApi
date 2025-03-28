@@ -34,6 +34,7 @@ const KiotViet_PurchaseOrder = require("./models/KiotViet_PurchaseOrder");
 const KiotViet_Category = require("./models/KiotViet_Category");
 const MiSa_Warehouse = require("./models/MiSa_Warehouse");
 const KiotViet_SupplierSchema = require("./models/KiotViet_SupplierSchema");
+const MiSa_WarehouseGoods = require("./models/MiSa_WarehouseGoods");
 const MONGO_URI = "mongodb+srv://thienduc2552003:Ag1RjZY8IHBomCD3@mockdata.hacn2.mongodb.net/MockData?retryWrites=true&w=majority";
 
 // Kết nối MongoDB
@@ -65,7 +66,7 @@ const createCrudRoutes = (model, route) => {
   
     app.post(`/${route}`, async (req, res) => {
       try {
-        console.log(newItem);
+        // console.log(newItem);
         const newItem = new model(req.body);
         await newItem.save();
         res.status(201).json(newItem);
@@ -104,7 +105,9 @@ const createCrudRoutes = (model, route) => {
   createCrudRoutes(SaleItems, 'misa-sale-items');
   createCrudRoutes(Goods, 'misa-goods');
   createCrudRoutes(MiSa_Warehouse, 'misa-warehouse');
+  createCrudRoutes(MiSa_WarehouseGoods, 'misa-warehouse-goods');
 
+  
   createCrudRoutes(KiotViet_Customer, 'kiotviet-customers');
   createCrudRoutes(KiotViet_Category, 'kiotviet-categories');
   createCrudRoutes(KiotViet_Branch, 'kiotviet-branchs');
