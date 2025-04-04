@@ -19,7 +19,10 @@ const CustomerSchema = new mongoose.Schema({
   type: Number,  // Thêm kiểu khách hàng
   organization: String,
   debt: Number,  // Thêm trường nợ
-  rewardPoint: Number  // Thêm điểm thưởng
+  rewardPoint: Number,  // Thêm điểm thưởng,
+  warehouse_id :{
+       type: mongoose.Types.ObjectId, ref: 'Warehouse' 
+    }
 });
 
 module.exports = mongoose.model("KiotViet_Customer", CustomerSchema);

@@ -5,7 +5,7 @@ const BranchSchema = new mongoose.Schema({
     address: { type: String, required: true },
     locationName: { type: String, required: true },
     contactNumber: { type: String, required: true },
-    retailerId: { type: Number, required: true },
+    retailerId: { type: mongoose.Schema.Types.ObjectId, ref: "Retailer", required: true },
     modifiedDate: { type: Date, required: true },
     createdDate: { type: Date, required: true }
 });

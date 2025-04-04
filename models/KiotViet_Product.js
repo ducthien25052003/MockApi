@@ -20,6 +20,7 @@ const ProductSchema = new mongoose.Schema({
   code: { type: String },//mã hàng(vạch)
   name: { type: String },// ten hang
   categoryId: { type: Number },// get từ bên model category 
+  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
   categoryName: { type: String },// get từ bên model category 
   allowsSale: { type: Boolean },// mặc định true
   type: { type: Number },// chưa rõ

@@ -13,10 +13,13 @@ const CustomersSchema = new Schema({
   Website: { type: String },//website
   Role: { type: String, enum: ['organization', 'individual'], default: 'organization' },
   Is_supplier: { type: Boolean },
-  Storeperson: { type: String },
+  Storeperson: {  type: Types.ObjectId, ref: 'Employer'  },
   Is_local_object: { type: Boolean },
   receipts: [{ type: Types.ObjectId, ref: 'Receipts' }],
-  sales: [{ type: Types.ObjectId, ref: 'Sales' }]
+  sales: [{ type: Types.ObjectId, ref: 'Sales' }],
+  warehouse_id :{
+     type: Types.ObjectId, ref: 'Warehouse' 
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Customers', CustomersSchema);
