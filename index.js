@@ -111,7 +111,17 @@ const createCrudRoutes = (model, route, populateFields = []) => {
       try {
           let filter = {};
           let { pageSize, currentItem, orderBy, orderDirection, ...query } = req.query;
+          const clientSecret = req.headers["clientsecret"];
+          // Nếu có clientSecret thì tìm warehouseId tương ứng
+          if (clientSecret) {
+            const warehouse = await MiSa_Warehouse.findOne({ clientSecret });
+            if (!warehouse) {
+                return res.status(404).json({ message: "Không tìm thấy warehouse với clientSecret này" });
+            }
 
+            // Gán điều kiện lọc theo warehouse
+            filter.warehouse = warehouse._id;
+        }
           // Chuyển đổi kiểu dữ liệu
           Object.keys(query).forEach(key => {
               if (query[key] === "true") filter[key] = true;
@@ -164,9 +174,12 @@ const createCrudRoutes = (model, route, populateFields = []) => {
 const misaWarehouseGoodsRoutes = require("./routes/misaWarehouseGoodsRouter");
 const saleRoutes = require("./routes/saleRouter");
 const inventoryOutsRoutes = require("./routes/InventoryOutsRouter");
+const MiSaWarehouseRoutes = require("./routes/MiSaWarehouseRouter");
+
 app.use("/misa-warehouse-goods", misaWarehouseGoodsRoutes);
 app.use("/misa-sales", saleRoutes);
 app.use("/misa-inventory-outs", inventoryOutsRoutes);
+app.use("/misa-warehouses", MiSaWarehouseRoutes);
 
   
   // Tạo API cho từng schema

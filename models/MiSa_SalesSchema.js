@@ -5,7 +5,7 @@ const SalesSchema = new Schema({
     Voucher_date: { type: Date },
     Posted_date: { type: Date },
     Customer: { type: Types.ObjectId, ref: 'Customers' },
-    Inventory_out: { type: Types.ObjectId, ref: 'InventoryOuts', default: null  },
+    // Inventory_out: { type: Types.ObjectId, ref: 'InventoryOuts', default: null  },
     sale_items: [{ type: Types.ObjectId, ref: 'SaleItems' }],
      warehouse_id :{
          type: Types.ObjectId, ref: 'Warehouse' 
