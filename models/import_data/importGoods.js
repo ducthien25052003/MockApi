@@ -22,15 +22,13 @@ const formattedData = jsonData.map(item => ({
     // stt: item["Danh sách khách hàng"],
     Name: item["__EMPTY_1"],
     Code: item["__EMPTY"],
-    Group: item["__EMPTY_4"],
-    Description: item["__EMPTY_9"],
-    Unit: item["__EMPTY_5"],
-    Price: item["__EMPTY_20"],
-    Quantity: item["__EMPTY_6"],
-    Inventory_account: item["__EMPTY_14"],
-    Warehouse: item["__EMPTY_12"],
-    Sales_account: item["__EMPTY_15"],
-    Characteristic: item["__EMPTY_3"],
+    Group: item["__EMPTY_3"],
+    Description: null  ,
+    Unit: item["__EMPTY_4"],
+    Price: item["__EMPTY_14"],
+    Inventory_account:null,
+    Sales_account: null,
+    Characteristic: item["__EMPTY_2"],
 
 
 }));

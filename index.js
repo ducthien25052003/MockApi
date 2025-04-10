@@ -168,6 +168,52 @@ const createCrudRoutes = (model, route, populateFields = []) => {
           res.status(500).json({ error: error.message });
       }
   });
+     // === [POST] ===
+     app.post(`/${route}`, async (req, res) => {
+        try {
+            const clientSecret = req.headers["clientsecret"];
+            let data = req.body;
+
+            if (clientSecret) {
+                const warehouse = await MiSa_Warehouse.findOne({ clientSecret });
+                if (!warehouse) {
+                    return res.status(404).json({ message: "Không tìm thấy warehouse với clientSecret này" });
+                }
+                data.warehouse = warehouse._id;
+            }
+
+            const newItem = new model(data);
+            const savedItem = await newItem.save();
+
+            res.status(201).json(savedItem);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    });
+
+    // === [PUT] ===
+    app.put(`/${route}/:id`, async (req, res) => {
+        try {
+            const updated = await model.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!updated) return res.status(404).json({ message: "Không tìm thấy bản ghi" });
+
+            res.json(updated);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    });
+
+    // === [DELETE] ===
+    app.delete(`/${route}/:id`, async (req, res) => {
+        try {
+            const deleted = await model.findByIdAndDelete(req.params.id);
+            if (!deleted) return res.status(404).json({ message: "Không tìm thấy bản ghi" });
+
+            res.json({ message: "Xóa thành công", deleted });
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    });
 };
 
 // Tạo API với populate cho WarehouseGoods
