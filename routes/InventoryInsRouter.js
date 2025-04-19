@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const InventoryOuts = require("../models/MiSa_InventoryOutsSchema");
-const InventoryOutItems = require("../models/MiSa_InventoryOutItemsSchema");
+const InventoryIns = require("../models/MiSa_InventoryInsSchema");
+const InventoryInItems = require("../models/MiSa_InventoryInItemsSchema");
 const MiSa_Warehouse = require("../models/MiSa_Warehouse");
 const MiSa_GoodsSchema = require("../models/MiSa_GoodsSchema");
 const Misa_CustomersSchema = require("../models/Misa_CustomersSchema");
@@ -27,15 +27,15 @@ router.get("/", async (req, res) => {
       }
   
       // Lấy danh sách phiếu xuất kho
-      const inventoryOuts = await InventoryOuts.find({ warehouse_id: warehouse._id })
+      const inventoryIns = await InventoryIns.find({ warehouse_id: warehouse._id })
         .populate("Customer_id", "Name phone address")
         .populate("sale_id", "name")
         .lean(); // ⚡ chuyển về object thường để dễ thêm item
   
       // Lấy tất cả item theo từng inventory_out
       const result = await Promise.all(
-        inventoryOuts.map(async (inv) => {
-          const items = await InventoryOutItems.find({ Inventory_out: inv._id }).lean();
+        inventoryIns.map(async (inv) => {
+          const items = await InventoryInItems.find({ Inventory_In: inv._id }).lean();
           return {
             ...inv,
             items // gán danh sách mặt hàng vào
@@ -69,18 +69,15 @@ router.get("/", async (req, res) => {
         if (!warehouse) {
             return res.status(404).json({ message: "Không tìm thấy warehouse tương ứng với clientSecret" });
         }
-        const {Customer_id} =  req.body;
-        const customer = await Misa_CustomersSchema.findOne({
-            Customer_id: Customer_id
-        }).session(session);
+       
         
-        const { inventory_out_items, ...inventoryOutData } = req.body;
-        inventoryOutData.warehouse_id = warehouse._id;
-        inventoryOutData.Customer_id = customer._id;
+        const { inventory_in_items, ...inventoryInData } = req.body;
+        inventoryInData.warehouse_id = warehouse._id;
+        // inventoryInData.Customer_id = customer._id;
 
         const inventoryItemsDocs = [];
 
-        for (const item of inventory_out_items) {
+        for (const item of inventory_in_items) {
             const good = await MiSa_GoodsSchema.findOne({ Code: item.Code });
             if (!good) {
                 await session.abortTransaction();
@@ -93,16 +90,16 @@ router.get("/", async (req, res) => {
                 Quantity: item.Quantity,
                 Price: good.Price, // cần có trường này
                 Status: item.Status,
-                Inventory_out: null
+                Inventory_in: null
             });
         }
 
-        const newInventoryOut = new InventoryOuts(inventoryOutData);
-        const savedInventoryOut = await newInventoryOut.save({ session });
+        const newInventoryIn = new InventoryIns(inventoryInData);
+        const savedInventoryIn = await newInventoryIn.save({ session });
 
-        inventoryItemsDocs.forEach(item => item.Inventory_out = savedInventoryOut._id);
+        inventoryItemsDocs.forEach(item => item.Inventory_in = savedInventoryIn._id);
 
-        const createdItems = await InventoryOutItems.insertMany(inventoryItemsDocs, { session });
+        const createdItems = await InventoryInItems.insertMany(inventoryItemsDocs, { session });
 
         for (const item of inventoryItemsDocs) {
             const { Good_id, Quantity } = item;
@@ -124,40 +121,16 @@ router.get("/", async (req, res) => {
                 return res.status(400).json({ message: `Không đủ số lượng trong kho cho sản phẩm: ${Good_id}` });
             }
 
-            warehouseGood.quantity -= Quantity;
+            warehouseGood.quantity += Quantity;
             await warehouseGood.save({ session });
         }
-
-        // ✅ Tính tổng tiền
-        const totalAmount = inventoryItemsDocs.reduce((sum, item) => {
-            return sum + item.Quantity * item.Price;
-        }, 0);
-        console.log(totalAmount);
-
-        // ✅ Cộng vào liability của customer
-        if (!inventoryOutData.Customer_id) {
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(400).json({ message: "Thiếu customer_id trong dữ liệu phiếu xuất" });
-        }
-        const customer1 = await Misa_CustomersSchema.findById( inventoryOutData.Customer_id ).session(session);
-        if (!customer1) {
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(404).json({ message: "Không tìm thấy khách hàng" });
-        }
-        console.log(customer1);
-        customer1.Liabilities = (Number(customer1.Liabilities) || 0) + totalAmount;
-        await customer1.save({ session });
-
-
         await session.commitTransaction();
         session.endSession();
 
         res.status(201).json({
             message: "Tạo phiếu xuất kho thành công!",
-            inventory_out: savedInventoryOut,
-            inventory_out_items: createdItems
+            inventory_in: savedInventoryIn,
+            inventory_in_items: createdItems
         });
     } catch (error) {
         await session.abortTransaction();
