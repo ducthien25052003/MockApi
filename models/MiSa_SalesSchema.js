@@ -9,7 +9,9 @@ const SalesSchema = new Schema({
     sale_items: [{ type: Types.ObjectId, ref: 'SaleItems' }],
      warehouse_id :{
          type: Types.ObjectId, ref: 'Warehouse' 
-      }
+      },
+      status: { type: Boolean, default: true }
+
   }, { timestamps: true });
   
 module.exports = mongoose.model('Sales', SalesSchema);

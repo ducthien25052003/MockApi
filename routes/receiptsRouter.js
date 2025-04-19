@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
                 
 
         // Tự tạo mã phiếu thu
-        const Voucher_no = `PT-${Date.now()}`;
+        const Voucher_no = `NTTK-${Date.now()}`;
 
         // Tạo phiếu thu
         const receipt = new MiSa_ReceiptsSchema({

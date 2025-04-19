@@ -23,7 +23,7 @@ InventoryInsSchema.pre("save", async function (next) {
     );
 
     // Format mã phiếu tùy ý, ví dụ: OUT0001, OUT0002,...
-    doc.Voucher_no = `IN${counter.seq.toString().padStart(4, "0")}`;
+    doc.Voucher_no = `NK${counter.seq.toString().padStart(4, "0")}`;
     next();
   } catch (err) {
     next(err);

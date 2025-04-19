@@ -14,45 +14,69 @@ const router = express.Router();
  * URL: POST /inventory-outs
  */
 router.get("/", async (req, res) => {
-    try {
-      const { clientsecret } = req.headers;
-  
-      if (!clientsecret) {
-        return res.status(400).json({ message: "Thiếu clientSecret trong header" });
-      }
-  
-      const warehouse = await MiSa_Warehouse.findOne({ clientSecret: clientsecret });
-      if (!warehouse) {
-        return res.status(404).json({ message: "Không tìm thấy warehouse tương ứng với clientSecret" });
-      }
-  
-      // Lấy danh sách phiếu xuất kho
-      const inventoryOuts = await InventoryOuts.find({ warehouse_id: warehouse._id })
-        .populate("Customer_id", "Name phone address")
-        .populate("sale_id", "name")
-        .lean(); // ⚡ chuyển về object thường để dễ thêm item
-  
-      // Lấy tất cả item theo từng inventory_out
-      const result = await Promise.all(
-        inventoryOuts.map(async (inv) => {
-          const items = await InventoryOutItems.find({ Inventory_out: inv._id }).lean();
-          return {
-            ...inv,
-            items // gán danh sách mặt hàng vào
-          };
-        })
-      );
-  
-      res.status(200).json({
-        message: "Lấy danh sách phiếu xuất kho thành công",
-        data: result
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Lỗi khi lấy danh sách phiếu xuất kho", error: error.message });
+  try {
+    const { clientsecret } = req.headers;
+
+    if (!clientsecret) {
+      return res.status(400).json({ message: "Thiếu clientSecret trong header" });
     }
-  });
-  
-  
+
+    const warehouse = await MiSa_Warehouse.findOne({ clientSecret: clientsecret });
+    if (!warehouse) {
+      return res.status(404).json({ message: "Không tìm thấy warehouse tương ứng với clientSecret" });
+    }
+
+    // Tạo filter động
+    const filter = { warehouse_id: warehouse._id };
+
+    for (const [key, value] of Object.entries(req.query)) {
+      if (!value) continue;
+
+      if (key === "posted_date") {
+        const date = new Date(value);
+        const nextDate = new Date(date);
+        nextDate.setDate(date.getDate() + 1);
+
+        filter.Posted_date = {
+          $gte: date,
+          $lt: nextDate
+        };
+      } else if (key === "voucher_no") {
+        filter.Voucher_no = { $regex: value, $options: "i" }; // tìm gần đúng
+      } else if (key === "sale_id" || key === "Customer_id") {
+        // ép kiểu sang ObjectId
+        filter[key] = new mongoose.Types.ObjectId(value);
+      } else {
+        filter[key] = value;
+      }
+    }
+
+    // Lấy danh sách phiếu xuất kho
+    const inventoryOuts = await InventoryOuts.find(filter)
+      .populate("Customer_id")
+      .populate("sale_id")
+      .lean();
+
+    // Gán danh sách mặt hàng
+    const result = await Promise.all(
+      inventoryOuts.map(async (inv) => {
+        const items = await InventoryOutItems.find({ Inventory_out: inv._id }).lean();
+        return {
+          ...inv,
+          items
+        };
+      })
+    );
+
+    res.status(200).json({
+      message: "Lấy danh sách phiếu xuất kho thành công",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi lấy danh sách phiếu xuất kho", error: error.message });
+  }
+});
+
 
   router.post("/", async (req, res) => {
     const session = await mongoose.startSession();
