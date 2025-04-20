@@ -219,6 +219,7 @@ const createCrudRoutes = (model, route, populateFields = []) => {
 // Tạo API với populate cho WarehouseGoods
 const misaWarehouseGoodsRoutes = require("./routes/misaWarehouseGoodsRouter");
 const kiotVietProductBranchesRouter = require("./routes/kiotVietProductBranchesRouter");
+const purchaseOrderRouter = require("./routes/purchaseOrderRouter");
 
 const saleRoutes = require("./routes/saleRouter");
 const inventoryOutsRoutes = require("./routes/InventoryOutsRouter");
@@ -231,6 +232,7 @@ const KiotViet_ProductBranch = require("./models/KiotViet_ProductBranch");
 
 app.use("/misa-warehouse-goods", misaWarehouseGoodsRoutes);
 app.use("/kiotviet-products-branches", kiotVietProductBranchesRouter);
+app.use("/kiotViet-purchase-order", purchaseOrderRouter);
 
 app.use("/misa-sales", saleRoutes);
 app.use("/misa-inventory-outs", inventoryOutsRoutes);
@@ -259,7 +261,7 @@ app.use("/misa-receipts", receiptsRouter);
   createCrudRoutes(KiotViet_Branch, 'kiotviet-branchs');
   createCrudRoutes(KiotViet_Product, 'kiotviet-products');
   createCrudRoutes(KiotViet_SupplierSchema, 'kiotviet-suppliers');
-  createCrudRoutes(KiotViet_PurchaseOrder, 'kiotViet-purchase-order');
+//   createCrudRoutes(KiotViet_PurchaseOrder, 'kiotViet-purchase-order');
   createCrudRoutes(KiotVietWarehouseSchema, 'kiotViet-warehouse');
 
 

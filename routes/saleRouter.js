@@ -4,6 +4,7 @@ const Sales = require("../models/MiSa_SalesSchema");
 const SaleItems = require("../models/MiSa_SaleItemsSchema");
 const MiSa_GoodsSchema = require("../models/MiSa_GoodsSchema");
 const MiSa_Warehouse = require("../models/MiSa_Warehouse");
+const MiSa_SalesSchema = require("../models/MiSa_SalesSchema");
 
 const router = express.Router();
 
@@ -74,5 +75,39 @@ router.post("/", async (req, res) => {
     }
 });
 
+// PUT /sales/:id/status
+router.put("/:id/status", async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const { id } = req.params;
+
+        const sale = await MiSa_SalesSchema.findById(id).session(session);
+
+        if (!sale) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+        }
+
+        // Đảo ngược trạng thái hiện tại của `status`
+        sale.status = !sale.status;
+        await sale.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({ 
+            message: "Đã cập nhật trạng thái thành công", 
+            newStatus: sale.status,
+            sale 
+        });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).json({ message: "Lỗi khi cập nhật trạng thái", error: error.message });
+    }
+});
 
 module.exports = router;
