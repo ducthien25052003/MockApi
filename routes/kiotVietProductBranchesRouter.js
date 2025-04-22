@@ -7,58 +7,79 @@ const KiotViet_Warehouse = require("../models/KiotViet_Warehouse");
 
 // Lấy danh sách hàng hóa theo warehouseId
 router.get("/", async (req, res) => {
-    try {
-        const retailerId = req.headers["retailerid"]; // ✅ lấy từ query: ?clientSecret=abc123
-        console.log(retailerId);
-        let filter = {};
-
-        // Nếu có clientSecret thì tìm warehouse_id tương ứng
-        if (retailerId) {
-            const branch = await KiotViet_Branch.findOne({ retailerId });
-
-            if (!branch) {
-                return res.status(404).json({ message: "Không tìm thấy branch với retailerId này" });
-            }
-
-            filter.branchId = branch._id;
-        }
-
-        const items = await KiotViet_ProductBranch.find(filter).populate("productId");
-        res.json(items); // ✅ Trả về danh sách hàng hóa
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+  try {
+    const retailerId = req.headers["retailerid"]; // ✅ lấy từ query: ?clientSecret=abc123
+    if (!retailerId) {
+      return res
+        .status(400)
+        .json({ message: "Thiếu retailerId trong headers" });
     }
+    console.log(retailerId);
+    let filter = {};
+
+    const warehouse = await KiotViet_Warehouse.findOne({ retailerId });
+    if (!warehouse) {
+      return res.status(404).json({ message: "Không tìm thấy kho" });
+    }
+    const branch = await KiotViet_Branch.findOne({ retailerId: warehouse._id });
+    if (!branch) {
+      return res.status(404).json({ message: "Không tìm thấy chi nhánh" });
+    }
+
+    filter.branchId = branch._id;
+
+    const items = await KiotViet_ProductBranch.find(filter).populate(
+      "productId"
+    );
+    res.json(items); // ✅ Trả về danh sách hàng hóa
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 router.get("/detail", async (req, res) => {
-    try {
-        const {  productCode } = req.query; // Lấy clientSecret và goodCode từ query: ?clientSecret=abc123&goodCode=XYZ123
-        const retailerId = req.headers["retailerid"];
-        // Tìm warehouse theo clientSecret
-        const branch = await KiotViet_Branch.findOne({ retailerId });
-
-        if (!branch) {
-            return res.status(404).json({ message: "Không tìm thấy branch với retailerId này" });
-        }
-         // Tìm warehouse theo clientSecret
-         const product = await KiotViet_Product.findOne({ code:productCode });
-
-         if (!product) {
-             return res.status(404).json({ message: "Không tìm thấy Product với code này" });
-         }
-        // Tìm warehouse goods theo warehouseId và code của good
-        const item = await KiotViet_ProductBranch.findOne({
-            branchId: branch._id,
-            productId: product._id
-        }).populate("productId");
-
-        if (!item) {
-            return res.status(404).json({ message: "Không tìm thấy hàng hóa với mã này trong kho" });
-        }
-
-        res.json(item); // Trả về chi tiết hàng hóa
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+  try {
+    const { productCode } = req.query; // Lấy clientSecret và goodCode từ query: ?clientSecret=abc123&goodCode=XYZ123
+    const retailerId = req.headers["retailerid"];
+    if (!retailerId) {
+      return res
+        .status(400)
+        .json({ message: "Thiếu retailerId trong headers" });
     }
+    // Tìm warehouse theo clientSecret
+    // Tìm warehouse theo retailerId
+    const warehouse = await KiotViet_Warehouse.findOne({ retailerId });
+    if (!warehouse) {
+      return res.status(404).json({ message: "Không tìm thấy kho" });
+    }
+    const branch = await KiotViet_Branch.findOne({ retailerId: warehouse._id });
+    if (!branch) {
+      return res.status(404).json({ message: "Không tìm thấy chi nhánh" });
+    }
+
+    // Tìm warehouse theo clientSecret
+    const product = await KiotViet_Product.findOne({ code: productCode });
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy Product với code này" });
+    }
+    // Tìm warehouse goods theo warehouseId và code của good
+    const item = await KiotViet_ProductBranch.findOne({
+      branchId: branch._id,
+      productId: product._id,
+    }).populate("productId");
+
+    if (!item) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy hàng hóa với mã này trong kho" });
+    }
+
+    res.json(item); // Trả về chi tiết hàng hóa
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Thêm hàng hóa vào kho
