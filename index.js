@@ -126,7 +126,7 @@ const createCrudRoutes = (model, route, populateFields = []) => {
           Object.keys(query).forEach(key => {
               if (query[key] === "true") filter[key] = true;
               else if (query[key] === "false") filter[key] = false;
-              else if (!isNaN(query[key])) filter[key] = Number(query[key]);
+            //   else if (!isNaN(query[key])) filter[key] = Number(query[key]);
               else filter[key] = query[key];
           });
 
