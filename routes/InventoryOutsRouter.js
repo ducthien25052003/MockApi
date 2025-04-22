@@ -54,7 +54,7 @@ router.get("/", async (req, res) => {
     // Lấy danh sách phiếu xuất kho
     const inventoryOuts = await InventoryOuts.find(filter)
       .populate("Customer_id")
-      .populate("sale_id")
+      // .populate("sale_id")
       .lean();
 
     // Gán danh sách mặt hàng
