@@ -220,6 +220,7 @@ const createCrudRoutes = (model, route, populateFields = []) => {
 const misaWarehouseGoodsRoutes = require("./routes/misaWarehouseGoodsRouter");
 const kiotVietProductBranchesRouter = require("./routes/kiotVietProductBranchesRouter");
 const purchaseOrderRouter = require("./routes/purchaseOrderRouter");
+const GetSaleInventoryOutbyVoucherNoRouter = require("./routes/GetSaleInventoryOutbyVoucherNoRouter");
 
 const saleRoutes = require("./routes/saleRouter");
 const inventoryOutsRoutes = require("./routes/InventoryOutsRouter");
@@ -233,7 +234,7 @@ const KiotViet_ProductBranch = require("./models/KiotViet_ProductBranch");
 app.use("/misa-warehouse-goods", misaWarehouseGoodsRoutes);
 app.use("/kiotviet-products-branches", kiotVietProductBranchesRouter);
 app.use("/kiotViet-purchase-order", purchaseOrderRouter);
-
+app.use("/getSaleByVoucher",GetSaleInventoryOutbyVoucherNoRouter);
 app.use("/misa-sales", saleRoutes);
 app.use("/misa-inventory-outs", inventoryOutsRoutes);
 app.use("/misa-inventory-ins", inventoryInsRoutes);
@@ -245,7 +246,7 @@ app.use("/misa-receipts", receiptsRouter);
 // Tạo API cho từng schema
   createCrudRoutes(Customers, 'misa-customers');
 //   createCrudRoutes(Receipts, 'misa-receipts');
-  createCrudRoutes(Sales, 'misa-sales');
+  createCrudRoutes(Sales, 'misa-sales',['sale_items']);
   createCrudRoutes(Banks, 'misa-banks');
   createCrudRoutes(InventoryOuts, 'misa-inventory-outs');
   createCrudRoutes(SaleItems, 'misa-sale-items');

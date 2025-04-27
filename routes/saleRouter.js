@@ -48,13 +48,12 @@ router.post("/", async (req, res) => {
             }
 
             saleItemsDocs.push({
-                Good_id: good._id,
+                Good: good._id,
                 Quantity: item.Quantity,
-                Price: item.Price,
                 Sale: savedSale._id
             });
         }
-
+        console.log(saleItemsDocs);
         const createdSaleItems = await SaleItems.insertMany(saleItemsDocs, { session });
 
         savedSale.sale_items = createdSaleItems.map(item => item._id);
