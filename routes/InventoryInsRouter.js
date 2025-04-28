@@ -28,8 +28,8 @@ router.get("/", async (req, res) => {
   
       // Lấy danh sách phiếu xuất kho
       const inventoryIns = await InventoryIns.find({ warehouse_id: warehouse._id })
-        .populate("Customer_id", "Name phone address")
-        .populate("sale_id", "name")
+        // .populate("Customer_id")
+        // .populate("sale_id"")
         .lean(); // ⚡ chuyển về object thường để dễ thêm item
   
       // Lấy tất cả item theo từng inventory_out
