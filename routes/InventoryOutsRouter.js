@@ -105,7 +105,7 @@ router.get("/", async (req, res) => {
         const inventoryItemsDocs = [];
 
         for (const item of inventory_out_items) {
-            const good = await MiSa_GoodsSchema.findOne({ Code: item.Code });
+            const good = await MiSa_GoodsSchema.findOne({ _id: item.Code });
             if (!good) {
                 await session.abortTransaction();
                 session.endSession();
